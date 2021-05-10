@@ -11,11 +11,19 @@
 #pragma once
 #include <JuceHeader.h>
 #include "httplib.h"
+#include "IPC.h"
 
 class WebServer : public juce::JUCEApplication
 {
 public:
+    //Constructor
+    WebServer();
+    //Destructor
+    ~WebServer();
+
     void RunServer();
+
+    AudioIPCS* IPCS;
 
 private:
 

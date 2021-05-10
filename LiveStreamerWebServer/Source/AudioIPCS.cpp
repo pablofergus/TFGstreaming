@@ -8,18 +8,21 @@
   ==============================================================================
 */
 
-#include "AudioInterprocessConectionServer.h"
+#include "IPC.h"
 
 // Constructor...
-AudioInterprocessConectionServer::AudioInterprocessConectionServer()
+AudioIPCS::AudioIPCS()
 {
 }
 
-AudioInterprocessConectionServer::~AudioInterprocessConectionServer()
+AudioIPCS::~AudioIPCS()
 {
 }
 
-juce::InterprocessConnection* AudioInterprocessConectionServer::createConnectionObject()
+juce::InterprocessConnection* AudioIPCS::createConnectionObject()
 {
-
+    AudioIPC* ipc = new AudioIPC();
+    if (_actionListener != 0)
+        ipc->addActionListener(_actionListener);
+    return ipc;
 }

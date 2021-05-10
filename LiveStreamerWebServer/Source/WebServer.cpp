@@ -13,9 +13,10 @@
 // Constructor...
 WebServer::WebServer()
 {
+    IPCS = new AudioIPCS();
 }
 
-// Desctructor..
+// Desctructor...
 WebServer::~WebServer()
 {
 }

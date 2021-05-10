@@ -5,10 +5,9 @@
               jucerFormatVersion="1">
   <MAINGROUP id="MuhoYF" name="LiveStreamerWebServer">
     <GROUP id="{87E64BFF-6AD4-1DC2-847E-5C7387750D65}" name="Source"/>
-    <FILE id="lj0yp0" name="AudioInterprocessConectionServer.cpp" compile="1"
-          resource="0" file="Source/AudioInterprocessConectionServer.cpp"/>
-    <FILE id="Yk9EjW" name="AudioInterprocessConectionServer.h" compile="0"
-          resource="0" file="Source/AudioInterprocessConectionServer.h"/>
+    <FILE id="UcF6wU" name="AudioIPC.cpp" compile="1" resource="0" file="Source/AudioIPC.cpp"/>
+    <FILE id="wPPJIK" name="AudioIPCS.cpp" compile="1" resource="0" file="Source/AudioIPCS.cpp"/>
+    <FILE id="Q48p1c" name="IPC.h" compile="0" resource="0" file="Source/IPC.h"/>
     <FILE id="fjRxsH" name="httplib.h" compile="0" resource="0" file="Source/httplib.h"/>
     <FILE id="guzAIY" name="WebServer.cpp" compile="1" resource="0" file="Source/WebServer.cpp"/>
     <FILE id="j2om9A" name="WebServer.h" compile="0" resource="0" file="Source/WebServer.h"/>
