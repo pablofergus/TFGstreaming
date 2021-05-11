@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="hBM65x" name="LiveStreamerWebServer" projectType="guiapp"
+<JUCERPROJECT id="m78Btx" name="LiveStreamerWebServer" projectType="consoleapp"
               useAppConfig="0" addUsingNamespaceToJuceHeader="0" displaySplashScreen="1"
               jucerFormatVersion="1">
-  <MAINGROUP id="MuhoYF" name="LiveStreamerWebServer">
-    <GROUP id="{87E64BFF-6AD4-1DC2-847E-5C7387750D65}" name="Source"/>
-    <FILE id="UcF6wU" name="AudioIPC.cpp" compile="1" resource="0" file="Source/AudioIPC.cpp"/>
-    <FILE id="wPPJIK" name="AudioIPCS.cpp" compile="1" resource="0" file="Source/AudioIPCS.cpp"/>
-    <FILE id="Q48p1c" name="IPC.h" compile="0" resource="0" file="Source/IPC.h"/>
-    <FILE id="fjRxsH" name="httplib.h" compile="0" resource="0" file="Source/httplib.h"/>
-    <FILE id="guzAIY" name="WebServer.cpp" compile="1" resource="0" file="Source/WebServer.cpp"/>
-    <FILE id="j2om9A" name="WebServer.h" compile="0" resource="0" file="Source/WebServer.h"/>
+  <MAINGROUP id="pNiQAs" name="LiveStreamerWebServer">
+    <GROUP id="{4A95A287-ACC1-8707-8525-706E76FC0217}" name="Source">
+      <FILE id="oLzOcZ" name="AudioIPC.cpp" compile="1" resource="0" file="Source/AudioIPC.cpp"/>
+      <FILE id="F46Qbb" name="AudioIPCS.cpp" compile="1" resource="0" file="Source/AudioIPCS.cpp"/>
+      <FILE id="z88BWW" name="httplib.h" compile="0" resource="0" file="Source/httplib.h"/>
+      <FILE id="hBjIR0" name="IPC.h" compile="0" resource="0" file="Source/IPC.h"/>
+      <FILE id="GQE472" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="hNdjTO" name="WebServer.cpp" compile="1" resource="0" file="Source/WebServer.cpp"/>
+      <FILE id="ZCLJo4" name="WebServer.h" compile="0" resource="0" file="Source/WebServer.h"/>
+    </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>
@@ -20,11 +22,9 @@
         <CONFIGURATION isDebug="0" name="Release" targetName="LiveStreamerWebServer"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2019>
   </EXPORTFORMATS>
@@ -32,8 +32,6 @@
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
   <LIVE_SETTINGS>
     <WINDOWS/>

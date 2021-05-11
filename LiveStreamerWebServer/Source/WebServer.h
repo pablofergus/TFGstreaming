@@ -10,10 +10,12 @@
 
 #pragma once
 #include <JuceHeader.h>
+#include <string>
+#include <iostream>
 #include "httplib.h"
 #include "IPC.h"
 
-class WebServer : public juce::JUCEApplication
+class WebServer
 {
 public:
     //Constructor
@@ -21,10 +23,16 @@ public:
     //Destructor
     ~WebServer();
 
-    void RunServer();
+    //const juce::String getApplicationName();
+    //const juce::String getApplicationVersion();
+    void initialise(int webPort, int ipcPort);
+    void shutdown();
 
-    AudioIPCS* IPCS;
+    AudioIPCS* IPCS = NULL;
+    AudioIPC* IPC = NULL;
 
 private:
-
+    void RunServer();
+    int port = 80;
+    //juce::ChildProcess* webProcess;
 };

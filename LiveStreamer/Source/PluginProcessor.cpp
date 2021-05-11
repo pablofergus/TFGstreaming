@@ -22,6 +22,9 @@ LiveStreamerAudioProcessor::LiveStreamerAudioProcessor()
                        )
 #endif
 {
+    //webServer = new WebServer();
+    webProcess = new juce::ChildProcess();
+    webProcess->start("path/to/server.exe", 1234);
 }
 
 LiveStreamerAudioProcessor::~LiveStreamerAudioProcessor()

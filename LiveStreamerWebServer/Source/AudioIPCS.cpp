@@ -22,7 +22,7 @@ AudioIPCS::~AudioIPCS()
 juce::InterprocessConnection* AudioIPCS::createConnectionObject()
 {
     AudioIPC* ipc = new AudioIPC();
-    if (_actionListener != 0)
-        ipc->addActionListener(_actionListener);
+    //if (_actionListener != 0)
+    //    ipc->addActionListener(_actionListener);
     return ipc;
 }

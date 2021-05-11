@@ -15,6 +15,8 @@
 class AudioIPC : public juce::InterprocessConnection, juce::ActionBroadcaster
 {
 public:
+    AudioIPC();
+    ~AudioIPC();
     virtual void messageReceived(const juce::MemoryBlock& message);
     virtual void connectionMade();
     virtual void connectionLost();
@@ -25,6 +27,8 @@ private:
 class AudioIPCS : public juce::InterprocessConnectionServer
 {
 public:
+    AudioIPCS();
+    ~AudioIPCS();
     virtual juce::InterprocessConnection* createConnectionObject();
 
 private:

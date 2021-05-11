@@ -10,6 +10,16 @@
 
 #include "IPC.h"
 
+AudioIPC::AudioIPC()
+{
+
+}
+
+AudioIPC::~AudioIPC()
+{
+
+}
+
 void AudioIPC::messageReceived(const juce::MemoryBlock& message)
 {
     //just relay the message on

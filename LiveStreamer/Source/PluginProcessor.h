@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+//#include "../../LiveStreamerWebServer/Source/WebServer.h"
 
 //==============================================================================
 /**
@@ -55,5 +56,7 @@ public:
 
 private:
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LiveStreamerAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LiveStreamerAudioProcessor)
+    //WebServer* webServer;
+    juce::ChildProcess* webProcess;
 };
