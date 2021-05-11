@@ -13,7 +13,7 @@
 #include <string>
 #include <iostream>
 #include <signal.h>
-#include "IPC.h"
+#include "mongoose.h"
 
 class WebServer
 {
@@ -22,17 +22,17 @@ public:
     WebServer();
     //Destructor
     ~WebServer();
-
-    //const juce::String getApplicationName();
-    //const juce::String getApplicationVersion();
+    
     void initialise(int webPort, int ipcPort);
     void shutdown();
 
-    AudioIPCS* IPCS = NULL;
-    AudioIPC* IPC = NULL;
+    void broadcast_audio();
+    
+    struct mg_mgr mgr;
+
 
 private:
     void RunServer();
-    int port = 80;
-    //juce::ChildProcess* webProcess;
+    AudioIPC* IPC = NULL;
+    int port = 801;
 };

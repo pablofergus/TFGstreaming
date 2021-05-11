@@ -24,11 +24,14 @@ LiveStreamerAudioProcessor::LiveStreamerAudioProcessor()
 {
     //webServer = new WebServer();
     webProcess = new juce::ChildProcess();
-    webProcess->start("path/to/server.exe", 1234);
+    IPC = new AudioIPC();
+    IPC->connectToPipe("TFGpipe", 100);
+    webProcess->start(juce::StringArray("start S:/Drive/UNI/TFG/TFGstreaming/LiveStreamerWebServer/Builds/VisualStudio2019/x64/Debug/ConsoleApp/LiveStreamerWebServer.exe", "801", "1234"));
 }
 
 LiveStreamerAudioProcessor::~LiveStreamerAudioProcessor()
 {
+    webProcess->kill();
 }
 
 //==============================================================================
@@ -156,6 +159,36 @@ void LiveStreamerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
+
+        // The number of bytes the floats in your audio buffer take 
+        const auto numBytesPerChannel = buffer.getNumSamples() * sizeof(float);
+        const auto bufferSizeInBytes = buffer.getNumChannels() * numBytesPerChannel;
+
+        // The memory block needs some extra space for the header
+        auto memBlockSizeInBytes = sizeof(AudioIPC::IPCBufferHeader) + bufferSizeInBytes;
+        juce::MemoryBlock block(memBlockSizeInBytes);
+
+        // Create the metadata
+        AudioIPC::IPCBufferHeader header;
+        header.numChannels = buffer.getNumChannels();
+        header.numSamples = buffer.getNumSamples();
+        // The access to the underlying storage we want to write to. A bit low level C++
+        char* data = (char*)block.getData();
+        // Copy the header into the block first
+        std::memcpy(data, &header, sizeof(AudioIPC::IPCBufferHeader));
+
+        // Compute the memory location right behind the header just written
+        data += sizeof(AudioIPC::IPCBufferHeader);
+
+        // loop over the channels, as we can't guarantee that all channels are contiguous in memory
+        for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
+        {
+            std::memcpy(data, buffer.getReadPointer(ch), numBytesPerChannel);
+            data += numBytesPerChannel;
+        }
+
+        // All has been written nicely packed, ready to send
+        IPC->sendMessage(block);
 
         // ..do something to the data...
     }

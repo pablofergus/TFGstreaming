@@ -2,15 +2,12 @@
 
 <JUCERPROJECT id="m78Btx" name="LiveStreamerWebServer" projectType="consoleapp"
               useAppConfig="0" addUsingNamespaceToJuceHeader="0" displaySplashScreen="1"
-              jucerFormatVersion="1">
+              jucerFormatVersion="1" compilerFlagSchemes="1">
   <MAINGROUP id="pNiQAs" name="LiveStreamerWebServer">
     <GROUP id="{4A95A287-ACC1-8707-8525-706E76FC0217}" name="Source">
-      <FILE id="oLzOcZ" name="AudioIPC.cpp" compile="1" resource="0" file="Source/AudioIPC.cpp"/>
-      <FILE id="F46Qbb" name="AudioIPCS.cpp" compile="0" resource="0" file="Source/AudioIPCS.cpp"/>
-      <FILE id="z88BWW" name="httplib.h" compile="0" resource="0" file="Source/httplib.h"/>
-      <FILE id="hBjIR0" name="IPC.h" compile="0" resource="0" file="Source/IPC.h"/>
       <FILE id="GQE472" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
-      <FILE id="qjd762" name="mongoose.c" compile="1" resource="0" file="Source/mongoose.c"/>
+      <FILE id="qjd762" name="mongoose.cpp" compile="1" resource="0" file="Source/mongoose.cpp"
+            compilerFlagScheme="1"/>
       <FILE id="vJKq6D" name="mongoose.h" compile="0" resource="0" file="Source/mongoose.h"/>
       <FILE id="hNdjTO" name="WebServer.cpp" compile="1" resource="0" file="Source/WebServer.cpp"/>
       <FILE id="ZCLJo4" name="WebServer.h" compile="0" resource="0" file="Source/WebServer.h"/>
@@ -18,7 +15,7 @@
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>
-    <VS2019 targetFolder="Builds/VisualStudio2019">
+    <VS2019 targetFolder="Builds/VisualStudio2019" 1="-MG_ENABLE_DIRECTORY_LISTING=1 -DMG_ENABLE_SSI=1">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="LiveStreamerWebServer"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="LiveStreamerWebServer"/>
@@ -27,10 +24,16 @@
         <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../JUCE/modules"/>
+        <MODULEPATH id="AudioIPC" path="../user_modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2019>
   </EXPORTFORMATS>
   <MODULES>
+    <MODULE id="AudioIPC" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>

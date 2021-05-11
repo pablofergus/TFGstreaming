@@ -9,11 +9,10 @@
 */
 
 #include "WebServer.h"
-#include "mongoose.h"
 
 
-const char* s_debug_level = "2";
-const char* s_root_dir = ".";
+const char* s_debug_level = "3";
+const char* s_root_dir = "web_root";
 const char* s_listening_address = "http://localhost:801";
 //const char* s_enable_hexdump = "no";
 const char* s_ssi_pattern = "#.shtml";
@@ -60,16 +59,42 @@ void WebServer::shutdown()
 // Simply serve static files from `s_root_dir`
 static void fn(struct mg_connection* c, int ev, void* ev_data, void* fn_data) {
     if (ev == MG_EV_HTTP_MSG) {
-        struct mg_http_serve_opts opts = { s_root_dir, s_ssi_pattern, NULL };
-        mg_http_serve_dir(c, static_cast<mg_http_message*>(ev_data), &opts);
+        struct mg_http_message* hm = (struct mg_http_message*)ev_data;
+        if (mg_http_match_uri(hm, "/api/audio1")) {
+            c->label[0] = 'S'; 
+            mg_printf(
+                c, "%s",
+                "HTTP/1.0 200 OK\r\n"
+                "Cache-Control: no-cache\r\n"
+                "Pragma: no-cache\r\nExpires: Thu, 01 Dec 1994 16:00:00 GMT\r\n"
+                "Content-Type: multipart/x-mixed-replace; boundary=--foo\r\n\r\n"
+            );
+        }
+        else {
+            struct mg_http_serve_opts opts = { s_root_dir, s_ssi_pattern, NULL };
+            mg_http_serve_dir(c, static_cast<mg_http_message*>(ev_data), &opts);
+        }
     }
     (void)fn_data;
+}
+
+void WebServer::broadcast_audio() {
+    juce::AudioBuffer<float> audiobuffer = IPC->currentBuffer;
+    struct mg_connection* c;
+    int size = audiobuffer.getNumSamples() * audiobuffer.getNumChannels();
+    for (c = mgr.conns; c != NULL; c = c->next) {
+        mg_send(c, audiobuffer.getArrayOfReadPointers(), size);
+    }
+}
+
+static void timer_callback(void* arg) {
+    WebServer* ws = (WebServer*)arg;
+    ws->broadcast_audio();
 }
 
 // TODO: check complier flags (mg)
 void WebServer::RunServer()
 {
-    struct mg_mgr mgr;
     struct mg_connection* c;
     int i;
 
@@ -88,8 +113,11 @@ void WebServer::RunServer()
     std::cout << std::string("Server listening...");
 
     // Start infinite event loop
+    struct mg_timer t1;
     LOG(LL_INFO, ("Starting Mongoose v%s, serving [%s]", MG_VERSION, s_root_dir));
-    while (true) mg_mgr_poll(&mgr, 1000);
+    mg_timer_init(&t1, 100, MG_TIMER_REPEAT, timer_callback, this);
+    for (;;) mg_mgr_poll(&mgr, 50);
+    mg_timer_free(&t1);
     mg_mgr_free(&mgr);
     //LOG(LL_INFO, ("Exiting on signal %d", s_signo));
 }
