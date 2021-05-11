@@ -12,7 +12,7 @@
 #include <JuceHeader.h>
 #include <string>
 #include <iostream>
-#include "httplib.h"
+#include <signal.h>
 #include "IPC.h"
 
 class WebServer

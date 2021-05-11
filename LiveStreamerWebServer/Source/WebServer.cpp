@@ -9,6 +9,14 @@
 */
 
 #include "WebServer.h"
+#include "mongoose.h"
+
+
+const char* s_debug_level = "2";
+const char* s_root_dir = ".";
+const char* s_listening_address = "http://localhost:801";
+//const char* s_enable_hexdump = "no";
+const char* s_ssi_pattern = "#.shtml";
 
 // Constructor...
 WebServer::WebServer()
@@ -47,58 +55,43 @@ void WebServer::shutdown()
 {
 }
 
+
+// Event handler for the listening connection.
+// Simply serve static files from `s_root_dir`
+static void fn(struct mg_connection* c, int ev, void* ev_data, void* fn_data) {
+    if (ev == MG_EV_HTTP_MSG) {
+        struct mg_http_serve_opts opts = { s_root_dir, s_ssi_pattern, NULL };
+        mg_http_serve_dir(c, static_cast<mg_http_message*>(ev_data), &opts);
+    }
+    (void)fn_data;
+}
+
+// TODO: check complier flags (mg)
 void WebServer::RunServer()
 {
-    using namespace httplib;
+    struct mg_mgr mgr;
+    struct mg_connection* c;
+    int i;
 
-    Server svr;
-
-    svr.Get("/hi", [](const Request& req, Response& res) {
-        res.set_content("Hello World!", "text/plain");
-        });
-
-    svr.Get(R"(/numbers/(\d+))", [&](const Request& req, Response& res) {
-        auto numbers = req.matches[1];
-        res.set_content(numbers, "text/plain");
-        });
-
-    svr.Get("/body-header-param", [](const Request& req, Response& res) {
-        if (req.has_header("Content-Length")) {
-            auto val = req.get_header_value("Content-Length");
-        }
-        if (req.has_param("key")) {
-            auto val = req.get_param_value("key");
-        }
-        res.set_content(req.body, "text/plain");
-        });
-
-    svr.Get("/stop", [&](const Request& req, Response& res) {
-        svr.stop();
-        });
-
-    // Mount / to ./www directory
-    /*auto ret = svr.set_mount_point("/", "./www");
-    if (!ret) {
-        // The specified base directory doesn't exist...
+    // Initialise stuff
+    //signal(SIGINT, signal_handler);
+    //signal(SIGTERM, signal_handler);
+    mg_log_set(s_debug_level);
+    mg_mgr_init(&mgr);
+    if ((c = mg_http_listen(&mgr, s_listening_address, fn, &mgr)) == NULL) {
+        LOG(LL_ERROR, ("Cannot listen on %s. Use http://ADDR:PORT or :PORT",
+            s_listening_address));
+        exit(EXIT_FAILURE);
     }
-
-    // Mount /public to ./www directory
-    ret = svr.set_mount_point("/public", "./www");
-
-    // Mount /public to ./www1 and ./www2 directories
-    ret = svr.set_mount_point("/public", "./www1"); // 1st order to search
-    ret = svr.set_mount_point("/public", "./www2"); // 2nd order to search
-
-    // Remove mount /
-    ret = svr.remove_mount_point("/");
-
-    // Remove mount /public
-    ret = svr.remove_mount_point("/public");*/
-
-    std::cout << std::string("Server ready...");
-
-    svr.listen("localhost", port);
+    //if (mg_casecmp(s_enable_hexdump, "yes") == 0) c->is_hexdumping = 1;
 
     std::cout << std::string("Server listening...");
 
+    // Start infinite event loop
+    LOG(LL_INFO, ("Starting Mongoose v%s, serving [%s]", MG_VERSION, s_root_dir));
+    while (true) mg_mgr_poll(&mgr, 1000);
+    mg_mgr_free(&mgr);
+    //LOG(LL_INFO, ("Exiting on signal %d", s_signo));
 }
+
+
