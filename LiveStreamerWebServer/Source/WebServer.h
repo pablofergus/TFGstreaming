@@ -26,13 +26,25 @@ public:
     void initialise(int webPort, int ipcPort);
     void shutdown();
 
-    void broadcast_audio();
+    //void broadcast_audio();
     
     struct mg_mgr mgr;
 
 
 private:
     void RunServer();
-    AudioIPC* IPC = NULL;
+    AudioIPC* IPC;
+    AudioIPCS* IPCS;
+    class AudioPackageListener : public juce::ActionListener
+    {
+    public:
+        AudioPackageListener(WebServer& owner);
+        ~AudioPackageListener();
+
+        void actionListenerCallback(const juce::String& message);
+    private:
+        WebServer& parent;
+    };
+    AudioPackageListener* listener;
     int port = 801;
 };

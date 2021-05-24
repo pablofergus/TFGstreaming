@@ -25,8 +25,10 @@ LiveStreamerAudioProcessor::LiveStreamerAudioProcessor()
     //webServer = new WebServer();
     webProcess = new juce::ChildProcess();
     IPC = new AudioIPC();
-    IPC->connectToPipe("TFGpipe", 100);
-    webProcess->start(juce::StringArray("start S:/Drive/UNI/TFG/TFGstreaming/LiveStreamerWebServer/Builds/VisualStudio2019/x64/Debug/ConsoleApp/LiveStreamerWebServer.exe", "801", "1234"));
+    //webProcess->start(juce::StringArray("S:/Drive/UNI/TFG/TFGstreaming/LiveStreamerWebServer/Builds/VisualStudio2019/x64/Debug/ConsoleApp/LiveStreamerWebServer.exe", "801", "1234"));
+    //if (!IPC->connectToPipe("TFGpipe", 100))
+    //    DBG("Could not connect IPC to pipe");
+    //DBG("Web server started...");
 }
 
 LiveStreamerAudioProcessor::~LiveStreamerAudioProcessor()
@@ -187,10 +189,27 @@ void LiveStreamerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
             data += numBytesPerChannel;
         }
 
-        // All has been written nicely packed, ready to send
-        IPC->sendMessage(block);
+        if (!IPC->isConnected())
+            jassert(IPC->connectToSocket("127.0.0.1", 1234, -1));
+        
+        if (IPC->isConnected()) {
+            // All has been written nicely packed, ready to send
+            if (IPC->sendMessage(block)) { //send block
+                DBG(IPC->getConnectedHostName());
+                //IPC->disconnect();
+                DBG("Sent IPC package succesfully with " + juce::String(memBlockSizeInBytes) + " bytes.");
+            }
+            else
+                DBG("ERROR SENDING IPC MESSAGE");
+        }
+        else
+            DBG("NOT CONNECTED??");
+        /*char webOutput[128];
+        if (webProcess->readProcessOutput(&webOutput, 128)) //BLOCKING??????????
+            DBG(juce::String(juce::CharPointer_UTF8(webOutput)));
+        else
+            DBG("No output??");*/
 
-        // ..do something to the data...
     }
 }
 

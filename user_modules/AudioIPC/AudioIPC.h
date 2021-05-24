@@ -20,7 +20,7 @@
 #include <juce_events/juce_events.h>
 #include <juce_audio_basics/juce_audio_basics.h>
 
-class AudioIPC : public juce::InterprocessConnection, juce::ActionBroadcaster
+class AudioIPC : public juce::InterprocessConnection, public juce::ActionBroadcaster
 {
 public:
     AudioIPC();
@@ -38,4 +38,17 @@ public:
     };
 
 private:
+};
+
+class AudioIPCS : public juce::InterprocessConnectionServer
+{
+public:
+    AudioIPCS(juce::ActionListener* actionListener);
+    ~AudioIPCS();
+
+protected:
+    virtual juce::InterprocessConnection* createConnectionObject();
+
+private:
+    juce::ActionListener* _actionListener;
 };
