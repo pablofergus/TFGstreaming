@@ -15,7 +15,7 @@
 #include <signal.h>
 #include "mongoose.h"
 
-class WebServer
+class WebServer : public juce::ChildProcessSlave
 {
 public:
     //Constructor
@@ -26,6 +26,10 @@ public:
     void initialise(int webPort, int ipcPort);
     void shutdown();
 
+    void handleMessageFromMaster(const juce::MemoryBlock& mb);
+    void handleConnectionMade();
+    void handleConnectionLost();
+
     //void broadcast_audio();
     
     struct mg_mgr mgr;
@@ -35,7 +39,7 @@ private:
     void RunServer();
     AudioIPC* IPC;
     AudioIPCS* IPCS;
-    class AudioPackageListener : public juce::ActionListener
+    /*class AudioPackageListener : public juce::ActionListener
     {
     public:
         AudioPackageListener(WebServer& owner);
@@ -45,6 +49,6 @@ private:
     private:
         WebServer& parent;
     };
-    AudioPackageListener* listener;
+    AudioPackageListener* listener;*/
     int port = 801;
 };

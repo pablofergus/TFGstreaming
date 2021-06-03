@@ -12,17 +12,18 @@
 
 AudioIPC::AudioIPC()
 {
-    //DBG("Created IPC");
+    DBG("Created IPC");
 }
 
 AudioIPC::~AudioIPC()
 {
-
+    disconnect();
 }
 
 
 void AudioIPC::messageReceived(const juce::MemoryBlock& message)
 {
+    DBG("RECIEVED");
     sendActionMessage(message.toString());
 
     auto* data = (char*)message.getData();
@@ -55,7 +56,7 @@ void AudioIPC::messageReceived(const juce::MemoryBlock& message)
     // process the buffer further
 }
 void AudioIPC::connectionMade() {
-    //DBG("Connection made");
+    DBG("Connection made");
 };
 void AudioIPC::connectionLost() {
     DBG("Connection lost");

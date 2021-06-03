@@ -22,18 +22,24 @@ LiveStreamerAudioProcessor::LiveStreamerAudioProcessor()
                        )
 #endif
 {
-    //webServer = new WebServer();
+    /*webServer = new WebServer();
     webProcess = new juce::ChildProcess();
     IPC = new AudioIPC();
-    //webProcess->start(juce::StringArray("S:/Drive/UNI/TFG/TFGstreaming/LiveStreamerWebServer/Builds/VisualStudio2019/x64/Debug/ConsoleApp/LiveStreamerWebServer.exe", "801", "1234"));
-    //if (!IPC->connectToPipe("TFGpipe", 100))
-    //    DBG("Could not connect IPC to pipe");
-    //DBG("Web server started...");
+    webProcess->start(juce::StringArray("S:/Drive/UNI/TFG/TFGstreaming/LiveStreamerWebServer/Builds/VisualStudio2019/x64/Debug/ConsoleApp/LiveStreamerWebServer.exe", "801", "1234"));
+    if (!IPC->connectToPipe("TFGpipe", 100))
+        DBG("Could not connect IPC to pipe");
+    DBG("Web server started...");*/
+    CPM = new CustomCPM();
+    juce::String wsfile = "S:/Drive/UNI/TFG/TFGstreaming/LiveStreamerWebServer/Builds/VisualStudio2019/x64/Debug/ConsoleApp/LiveStreamerWebServer.exe";
+    if (CPM->launchSlaveProcess(wsfile, "TFG_comand_line", 0))
+        DBG("LAUNCHED CHILD PROCESS LOLOLOLOLOLO");
 }
+
 
 LiveStreamerAudioProcessor::~LiveStreamerAudioProcessor()
 {
-    webProcess->kill();
+    //webProcess->kill();
+    CPM->killSlaveProcess();
 }
 
 //==============================================================================
@@ -189,8 +195,14 @@ void LiveStreamerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
             data += numBytesPerChannel;
         }
 
-        if (!IPC->isConnected())
-            jassert(IPC->connectToSocket("127.0.0.1", 1234, -1));
+        if (CPM->sendMessageToSlave(block))
+            DBG("Sent Message to slave");
+        else
+            DBG("SHIT");
+
+        /*if (!IPC->isConnected())
+            jassert(IPC->connectToPipe("TFGpipe", -1));
+            //jassert(IPC->connectToSocket("127.0.0.1", 1234, -1));
         
         if (IPC->isConnected()) {
             // All has been written nicely packed, ready to send
@@ -244,3 +256,8 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new LiveStreamerAudioProcessor();
 }
+
+
+void LiveStreamerAudioProcessor::CustomCPM::handleConnectionLost() {}
+
+void LiveStreamerAudioProcessor::CustomCPM::handleMessageFromSlave(const juce::MemoryBlock&) { DBG("CALLBACK SUCCEDED"); }

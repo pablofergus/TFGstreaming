@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include <windows.h>
 
 //==============================================================================
 /**
@@ -56,7 +57,12 @@ public:
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LiveStreamerAudioProcessor)
-    //WebServer* webServer;
-    juce::ChildProcess* webProcess;
-    AudioIPC* IPC;
+    //juce::ChildProcess* webProcess;
+    //AudioIPC* IPC;
+    class CustomCPM : public juce::ChildProcessMaster
+    {
+        void handleMessageFromSlave(const juce::MemoryBlock&);
+        void handleConnectionLost();
+    };
+    CustomCPM* CPM;
 };

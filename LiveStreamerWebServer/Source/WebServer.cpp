@@ -37,12 +37,14 @@ const juce::String WebServer::getApplicationVersion()
     return "v0.1";
 }*/
 
-WebServer::AudioPackageListener::AudioPackageListener(WebServer& owner) : parent(owner)
+/*WebServer::AudioPackageListener::AudioPackageListener(WebServer& owner) : parent(owner)
 {}
-WebServer::AudioPackageListener::~AudioPackageListener() {}
-void WebServer::AudioPackageListener::actionListenerCallback(const juce::String & message) {
-    DBG("CALLBACK");
-    char* data = (char*)message.toStdString().c_str();
+WebServer::AudioPackageListener::~AudioPackageListener() {}*/
+void WebServer::handleMessageFromMaster(const juce::MemoryBlock& mb) {
+    std::cout << juce::String("CALLBACK");
+
+    sendMessageToMaster(mb);
+    /*char* data = (char*)message.toStdString().c_str();
 
     AudioIPC::IPCBufferHeader header;
     std::memcpy(&header, data, sizeof(AudioIPC::IPCBufferHeader));
@@ -72,25 +74,29 @@ void WebServer::AudioPackageListener::actionListenerCallback(const juce::String 
     struct mg_connection* c;
     for (c = parent.mgr.conns; c != NULL; c = c->next) {
         char ip;
-        //std::cout << mg_ntoa(&c->peer, &ip, 8);
         mg_send(c, currentBuffer.getArrayOfReadPointers(), size);
-        //std::cout << " bytes sent\n";
-    }
+    }*/
 }
+
+void WebServer::handleConnectionMade() { DBG("CONNECTION MADE CPS"); }
+void WebServer::handleConnectionLost() { DBG("CONNECTION LOST CPS"); }
 
 void WebServer::initialise(int webPort, int ipcPort)
 {
     /*IPCS = new AudioIPCS();
     if (!IPCS->beginWaitingForSocket(ipcPort, ""))
         throw std::invalid_argument("Couldn't open IPCS socket");*/
-    std::cout << std::string("Initialize server...");
+    if (initialiseFromCommandLine("command_line", "TFG_comand_line", 0))
+        DBG("Connection unsuccsesfull");
+    std::cout << std::string("Initialize server...\n\n");
     juce::initialiseJuce_GUI();
-    listener = new AudioPackageListener(*this);
-    IPCS = new AudioIPCS(listener);
-    IPC = new AudioIPC();
-    jassert(IPCS->beginWaitingForSocket(1234));
+    //listener = new AudioPackageListener(*this);
+    //IPCS = new AudioIPCS(listener);
+    /*IPC = new AudioIPC();
+    //jassert(IPCS->beginWaitingForSocket(1234));
     if (!IPC->createPipe("TFGpipe", -1, true))
-        std::cout << "COULD NOT CREATE PIPE";
+        std::cout << std::string("COULD NOT CREATE PIPE\n\n");
+    else std::cout << std::string("CREATED IPC PIPE\n\n");*/
 
     port = webPort;
     RunServer();
@@ -165,13 +171,15 @@ void WebServer::RunServer()
     }
     //if (mg_casecmp(s_enable_hexdump, "yes") == 0) c->is_hexdumping = 1;
 
-    std::cout << std::string("Server listening...\n");
+    std::cout << std::string("Server listening...\n\n\n\n");
 
     // Start infinite event loop
     struct mg_timer t1;
     LOG(LL_INFO, ("Starting Mongoose v%s, serving [%s]", MG_VERSION, s_root_dir));
     //mg_timer_init(&t1, 100, MG_TIMER_REPEAT, timer_callback, this);
-    for (;;) mg_mgr_poll(&mgr, 50);
+    for (;;) {
+        mg_mgr_poll(&mgr, 50);
+    }
     mg_timer_free(&t1);
     mg_mgr_free(&mgr);
     //LOG(LL_INFO, ("Exiting on signal %d", s_signo));
